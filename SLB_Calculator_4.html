@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLB Cost of Capital Calculator — Cobalt Commercial Credit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#002347;
+    --cobalt:#0047AB;
+    --secondary:#1a4b8c;
+    --tertiary:#4a7fc4;
+    --bg:#f6f8fb;
+    --panel:#ffffff;
+    --line:#e2e8f0;
+    --text:#0f1e33;
+    --muted:#33475f;
+    --good:#0f7a4a;
+    --bad:#b3261e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 64px;}
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line);
+    padding-bottom:20px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+  }
+  .brand svg{
+    height:38px;
+    width:auto;
+    display:block;
+  }
+  .brand-heading{
+    margin-left:16px;
+    padding-left:16px;
+    border-left:1px solid var(--line);
+  }
+  h1{
+    font-family:'Sora',sans-serif;
+    font-size:22px;
+    font-weight:600;
+    margin:0;
+    color:var(--navy);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:24px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px;
+  }
+  .section-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--cobalt);
+    margin:0 0 14px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-label:not(:first-child){margin-top:24px;}
+
+  label{
+    display:block;
+    font-size:12.5px;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .field{margin-bottom:14px;}
+  .input-row{
+    display:flex;
+    align-items:center;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:#fbfcfe;
+    overflow:hidden;
+  }
+  .input-row:focus-within{border-color:var(--cobalt);}
+  .input-row span.prefix, .input-row span.suffix{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--muted);
+    padding:0 10px;
+    background:#eef2f8;
+  }
+  input[type=number]{
+    border:none;
+    background:transparent;
+    outline:none;
+    padding:9px 10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13.5px;
+    color:var(--text);
+    width:100%;
+    min-width:0;
+  }
+  input[type=number]::-webkit-inner-spin-button{opacity:0.3;}
+
+  .results{display:flex;flex-direction:column;gap:20px;}
+
+  .headline{
+    background:linear-gradient(135deg, var(--navy), var(--secondary));
+    border-radius:6px;
+    padding:26px 28px;
+    color:#fff;
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    justify-content:space-between;
+    align-items:flex-end;
+  }
+  .headline .metric-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.07em;
+    text-transform:uppercase;
+    color:#b9cbe8;
+    margin-bottom:6px;
+  }
+  .headline .metric-value{
+    font-family:'Sora',sans-serif;
+    font-size:40px;
+    font-weight:700;
+    line-height:1;
+  }
+  .headline .metric-sub{
+    font-size:12.5px;
+    color:#d4e0f2;
+    margin-top:6px;
+    max-width:280px;
+  }
+
+  .compare{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px;
+  }
+  .compare h2{
+    font-family:'Sora',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 18px;
+    color:var(--navy);
+  }
+  .bar-row{margin-bottom:18px;}
+  .bar-row:last-child{margin-bottom:0;}
+  .bar-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:6px;
+  }
+  .bar-name{font-size:13px;font-weight:600;color:var(--text);}
+  .bar-name .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:var(--muted);
+    font-weight:400;
+    margin-left:6px;
+  }
+  .bar-amount{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:15px;
+    font-weight:600;
+  }
+  .bar-track{
+    height:26px;
+    background:#eef2f8;
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    display:flex;
+    align-items:center;
+    padding-left:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:#fff;
+    white-space:nowrap;
+    transition:width 0.2s ease;
+  }
+  .bar-fill.slb{background:var(--cobalt);}
+  .bar-fill.debt{background:var(--tertiary);}
+
+  .delta-note{
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .delta-note b{color:var(--text);}
+
+  table.detail{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  table.detail th{
+    text-align:left;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:500;
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  table.detail td{
+    padding:9px 10px;
+    border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  table.detail td.label{
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--muted);
+  }
+  table.detail tr:last-child td{border-bottom:none;}
+  table.detail td.hi{color:var(--navy);font-weight:600;}
+
+  .disclaimer{
+    margin-top:28px;
+    font-size:11.5px;
+    color:var(--muted);
+    line-height:1.5;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+
+  .breakeven{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#eef4ff;
+    border:1px solid #cfe0f7;
+    border-radius:6px;
+    padding:16px 20px;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .breakeven .be-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--secondary);
+  }
+  .breakeven .be-value{
+    font-family:'Sora',sans-serif;
+    font-size:26px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .breakeven .be-note{
+    font-size:12.5px;
+    color:var(--muted);
+    max-width:460px;
+  }
+
+  table.sens{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+  }
+  table.sens th{
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:500;
+    padding:8px 6px;
+    border-bottom:1px solid var(--line);
+  }
+  table.sens th:first-child{text-align:left;}
+  table.sens td{
+    text-align:center;
+    padding:8px 6px;
+    border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  table.sens td:first-child{
+    text-align:left;
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--muted);
+  }
+  table.sens tr:last-child td{border-bottom:none;}
+  table.sens tr.current-row td{background:#eef4ff;font-weight:600;}
+  table.sens td.win-slb{color:var(--cobalt);font-weight:600;}
+  table.sens td.win-debt{color:var(--tertiary);font-weight:600;}
+
+  .input-warning{
+    background:#fdf1e8;
+    border:1px solid #f0c9a0;
+    color:#8a4a10;
+    border-radius:6px;
+    padding:12px 18px;
+    font-size:12.5px;
+    line-height:1.5;
+    margin-bottom:20px;
+  }
+  .input-warning b{color:#6b3808;}
+
+  .print-only{display:none;}
+
+  @media print{
+    body{margin:0;}
+    .wrap > *{display:none !important;}
+    .wrap > #printSummary{display:block !important;}
+    .wrap{max-width:none;padding:0;}
+  }
+
+  .ps-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:2px solid var(--navy);
+    padding-bottom:14px;
+    margin-bottom:20px;
+  }
+  .ps-header svg{height:34px;width:auto;}
+  .ps-title{
+    font-family:'Sora',sans-serif;
+    font-size:18px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .ps-date{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--muted);
+  }
+  .ps-section{margin-bottom:18px;}
+  .ps-section h3{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--cobalt);
+    border-bottom:1px solid var(--line);
+    padding-bottom:6px;
+    margin:0 0 10px;
+  }
+  .ps-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 24px;
+    font-size:12.5px;
+  }
+  .ps-grid div{display:flex;justify-content:space-between;border-bottom:1px dotted var(--line);padding:4px 0;}
+  .ps-grid div span:first-child{color:var(--muted);}
+  .ps-grid div span:last-child{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy);}
+  .ps-headline{
+    background:var(--navy);
+    color:#fff;
+    border-radius:6px;
+    padding:16px 20px;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+  }
+  .ps-headline div{text-align:center;}
+  .ps-headline .ps-h-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:#b9cbe8;margin-bottom:4px;}
+  .ps-headline .ps-h-value{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;}
+  .ps-footnote{
+    font-size:10.5px;
+    color:var(--muted);
+    line-height:1.5;
+    border-top:1px solid var(--line);
+    padding-top:12px;
+    margin-top:20px;
+  }
+
+  .advanced-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    cursor:pointer;
+    user-select:none;
+    padding:16px 24px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-family:'Sora',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    color:var(--navy);
+  }
+  .advanced-toggle .chev{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--cobalt);
+    transition:transform 0.15s ease;
+  }
+  .advanced-toggle.open .chev{transform:rotate(90deg);}
+  .advanced-body{
+    display:none;
+    flex-direction:column;
+    gap:20px;
+  }
+  .advanced-body.open{display:flex;}
+  .adv-inputs{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:16px;
+  }
+  .adv-inputs .field{margin-bottom:0;min-width:170px;flex:1;}
+  .adv-note{
+    font-size:11.5px;
+    color:var(--muted);
+    line-height:1.5;
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed var(--line);
+  }
+  .authgate{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:500; padding:24px; }
+  .authcard{ background:var(--panel); border:1px solid var(--line); border-radius:10px; width:100%; max-width:380px; padding:28px 28px 24px;
+    box-shadow:0 8px 24px -12px rgba(15,30,51,0.2); }
+  .authcard h1{ font-family:'Sora',sans-serif; font-size:20px; margin:0 0 3px; color:var(--navy); }
+  .authcard p.sub{ font-size:12.5px; color:var(--muted); margin:0 0 20px; }
+  .authcard label{ display:block; font-size:12px; font-weight:600; margin-bottom:5px; margin-top:14px; color:var(--text); }
+  .authcard input{ width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:6px; font-size:13.5px; font-family:'IBM Plex Sans',sans-serif; box-sizing:border-box; }
+  .authcard button{ width:100%; margin-top:18px; padding:10px; background:var(--cobalt); border:1px solid var(--cobalt);
+    color:#fff; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }
+  .authcard button:hover{ background:var(--secondary); }
+  .authcard .err{ font-size:12.5px; color:var(--bad); margin-top:10px; display:none; }
+  .authcard .err.show{ display:block; }
+  .save-scenario-bar{ display:flex; align-items:center; gap:10px; justify-content:flex-end; margin-bottom:14px; flex-wrap:wrap; }
+  .save-scenario-bar .linked-tag{ font-size:11.5px; color:var(--good); background:#e6f4ec; padding:4px 10px; border-radius:100px; font-weight:600; }
+  .save-scenario-bar button{ background:var(--navy); color:#fff; border:none; border-radius:4px; padding:8px 14px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.04em; text-transform:uppercase; cursor:pointer; }
+  .save-scenario-bar button:hover{ background:var(--secondary); }
+</style>
+</head>
+<body>
+<div class="authgate" id="authGate">
+  <div class="authcard">
+    <h1>Sign in</h1>
+    <p class="sub">Cobalt SLB Calculator — for the team only.</p>
+    <label>Email</label>
+    <input type="email" id="authEmail" autocomplete="username">
+    <label>Password</label>
+    <input type="password" id="authPassword" autocomplete="current-password">
+    <button id="authSubmit">Sign in</button>
+    <div class="err" id="authErr"></div>
+  </div>
+</div>
+<div id="mainApp" style="display:none;">
+<div class="wrap">
+
+  <div class="save-scenario-bar" id="saveScenarioBar">
+    <input type="text" id="preparedFor" placeholder="Prepared for..." style="padding:8px 10px;border:1px solid var(--line);border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;min-width:220px;">
+    <span class="linked-tag" id="linkedTag" style="display:none;"></span>
+    <select id="toolSwitcher" style="padding:8px 10px;border:1px solid var(--line);border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;cursor:pointer;">
+      <option value="">Switch tool…</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-hub/">🏠 Terminal</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-prospect-engine/">CRE Cold Outreach</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-debt-deals/">Pipeline</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-debt-capacity-calc/">Debt Capacity Calculator</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-treasury-audit/">Treasury Firepower Audit</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-referral-partners/">Referral Partner Tracker</option>
+      <option value="https://cobaltcommercialcredit.github.io/cobalt-bank-matrix/">Bank Matrix</option>
+    </select>
+    <button id="saveScenarioBtn">Save this scenario</button>
+    <button id="runAuditBtn" style="display:none;background:var(--secondary);">Run Audit for this Deal →</button>
+    <button id="signOutBtn" style="background:transparent;color:var(--muted);border:1px solid var(--line);">Sign out</button>
+  </div>
+
+
+  <header>
+    <div style="display:flex;align-items:center;">
+      <div class="brand"><svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" viewBox="140 270 745 225"><polygon fill="#1a4b8c" points="242.74669 285.5804 256.15816 374.10946 327.42649 334.47028"/><polygon fill="#4a7fc4" points="329.32111 430.70878 329.32111 335.56417 258.07371 383.13647"/><polygon fill="#002347" points="154.63524 335.56417 154.63524 430.70878 225.88271 383.13647"/><polygon fill="#0047ab" points="227.7982 374.10946 241.20966 285.5804 156.52986 334.47028"/><polygon fill="#0047ab" points="227.7982 392.16349 155.13954 432.57591 241.4713 482.4196"/><polygon fill="#1a4b8c" points="256.15816 392.16349 242.48506 482.4196 328.81682 432.57591"/><g style="fill:#002347"><path d="m 441.8149,347.11795 -8.78946,10.01303 c -4.78384,-5.34015 -11.68195,-9.34577 -20.36045,-9.34577 -16.4658,0 -27.48048,12.34973 -27.48048,29.59476 0,17.02261 11.01469,29.48329 27.48048,29.48329 9.01238,0 16.02146,-4.11658 20.8053,-9.79061 l 8.6785,10.23596 c -7.78831,8.56704 -17.69038,12.34973 -29.4838,12.34973 -24.2541,0 -41.6106,-18.13522 -41.6106,-42.27837 0,-24.36557 17.35649,-42.38933 41.6106,-42.38933 12.46119,0 21.47307,4.22753 29.14991,12.1273 z"/><path d="m 542.05568,377.37998 c 0,24.47703 -17.80134,42.27837 -41.6111,42.27837 -23.92022,0 -41.6106,-17.80134 -41.6106,-42.27837 0,-24.36557 17.69038,-42.38933 41.6106,-42.38933 23.80976,0 41.6111,18.02376 41.6111,42.38933 z m -69.09159,0 c 0,17.24503 11.34807,29.48329 27.48048,29.48329 16.02146,0 27.48099,-12.23826 27.48099,-29.48329 0,-17.24503 -11.45953,-29.59476 -27.48099,-29.59476 -16.13242,0 -27.48048,12.34973 -27.48048,29.59476 z"/><path d="m 623.38149,358.2436 c 0,8.56704 -4.56142,14.01865 -8.90042,16.4663 8.78946,2.67007 15.57611,8.45557 15.57611,20.13753 0,14.90884 -11.571,23.36441 -26.92468,23.36441 h -35.60268 v -81.77469 h 30.15106 c 16.4663,0 25.7006,8.34411 25.7006,21.80645 z m -42.05544,-9.12334 v 21.58403 h 15.35369 c 7.89926,0 12.68361,-4.44996 12.68361,-10.79176 0,-6.78665 -4.67288,-10.79227 -13.46234,-10.79227 z m 0,33.26648 v 23.14149 h 20.13753 c 8.90092,0 14.57496,-4.00511 14.57496,-11.57049 0,-7.45442 -5.34015,-11.571 -15.46464,-11.571 h -19.24784 z"/><path d="m 761.5581,405.86212 h 37.04867 v 12.34973 h -50.95636 v -81.77469 h 13.90769 v 69.42497 z"/><path d="m 869.36476,348.78688 h -27.70291 v 69.42497 h -13.90769 v -69.42497 h -27.70291 v -12.34973 h 69.3135 v 12.34973 z"/></g><polygon fill="#002347" points="686.35066 334.99065 685.90582 334.99065 647.41014 418.21184 662.54141 418.21184 686.12824 363.58375 709.71508 418.21184 724.84584 418.21184"/><polygon fill="#0047ab" points="675.65591 418.21184 686.12824 393.95749 696.60057 418.21184"/><g style="fill:#1a4b8c"><path d="m 382.62256,442.73596 c 0.86963,-0.86963 1.89795,-1.54346 3.0874,-2.02197 1.18799,-0.47803 2.49268,-0.71729 3.91309,-0.71729 1.50684,0 2.90576,0.3042 4.19629,0.91309 1.28955,0.60889 2.44189,1.50781 3.45654,2.6958 l 4.56592,-4.17432 c -1.4502,-1.76758 -3.24707,-3.10889 -5.39209,-4.02197 -2.14551,-0.91309 -4.53711,-1.36963 -7.17432,-1.36963 -2.34814,0 -4.52979,0.38477 -6.54443,1.15234 -2.01514,0.76855 -3.76855,1.86279 -5.26123,3.28271 -1.49316,1.4209 -2.65234,3.0874 -3.47852,5.00049 -0.82617,1.91357 -1.23926,4.01562 -1.23926,6.30518 0,2.29004 0.41309,4.3916 1.23926,6.30469 0.82617,1.91357 1.97852,3.58057 3.45703,5.00049 1.47803,1.4209 3.22412,2.51514 5.23926,3.2832 2.01465,0.76758 4.19629,1.15234 6.54443,1.15234 2.6665,0 5.07227,-0.46436 7.21777,-1.3916 2.14502,-0.92725 3.94189,-2.27539 5.39209,-4.04395 l -4.56592,-4.17432 c -1.01465,1.18896 -2.16699,2.09473 -3.45654,2.71777 -1.29053,0.62354 -2.68945,0.93506 -4.19629,0.93506 -1.42041,0 -2.7251,-0.23926 -3.91309,-0.71777 -1.18945,-0.47803 -2.21777,-1.15234 -3.0874,-2.02197 -0.86963,-0.86963 -1.54395,-1.89795 -2.02197,-3.08691 -0.47852,-1.18848 -0.71729,-2.50732 -0.71729,-3.95703 0,-1.44922 0.23877,-2.76807 0.71729,-3.95703 0.47803,-1.18848 1.15234,-2.21777 2.02197,-3.0874 z"/><path d="m 431.45312,438.47473 c -1.50732,-1.41992 -3.26855,-2.51416 -5.2832,-3.28271 -2.01514,-0.76758 -4.2251,-1.15234 -6.63086,-1.15234 -2.40674,0 -4.6167,0.39111 -6.63086,1.17383 -2.01562,0.78271 -3.77637,1.88477 -5.2832,3.30469 -1.50781,1.4209 -2.67432,3.08057 -3.50049,4.979 -0.82617,1.89893 -1.23926,3.99365 -1.23926,6.2832 0,2.26123 0.41309,4.34814 1.23926,6.26123 0.82617,1.91357 1.99268,3.58057 3.50049,5.00049 1.50684,1.4209 3.27539,2.52197 5.30469,3.30469 2.02881,0.78271 4.24658,1.17432 6.65283,1.17432 2.37646,0 4.57227,-0.38477 6.5874,-1.15234 2.01465,-0.76807 3.77588,-1.8623 5.2832,-3.2832 1.50684,-1.41992 2.67432,-3.09375 3.50049,-5.02197 0.82617,-1.92773 1.23926,-4.02197 1.23926,-6.2832 0,-2.28955 -0.41309,-4.3916 -1.23926,-6.30518 -0.82617,-1.91309 -1.99365,-3.57959 -3.50049,-5.00049 z m -3.10888,15.24072 c -0.47852,1.17383 -1.15234,2.20312 -2.02197,3.0874 -0.86963,0.88428 -1.87744,1.56543 -3.02197,2.04346 -1.14551,0.47852 -2.39893,0.71777 -3.76123,0.71777 -1.36279,0 -2.62402,-0.23926 -3.7832,-0.71777 -1.15967,-0.47803 -2.16699,-1.15918 -3.02197,-2.04346 -0.85547,-0.88428 -1.52197,-1.91357 -2,-3.0874 -0.47852,-1.17383 -0.71729,-2.48535 -0.71729,-3.93506 0,-1.44922 0.23877,-2.76123 0.71729,-3.93506 0.47803,-1.17432 1.14453,-2.20264 2,-3.0874 0.85498,-0.88379 1.8623,-1.56543 3.02197,-2.04395 1.15918,-0.47803 2.42041,-0.71729 3.7832,-0.71729 1.3623,0 2.61572,0.23926 3.76123,0.71729 1.14453,0.47852 2.15234,1.16016 3.02197,2.04395 0.86963,0.88477 1.54346,1.91309 2.02197,3.0874 0.47852,1.17383 0.71729,2.48584 0.71729,3.93506 0,1.44971 -0.23877,2.76123 -0.71729,3.93506 z"/><path d="m 441.49756,434.56165 v 30.4375 h 6.56592 v -17.95252 l 8.95752,14.69129 h 3.13086 l 8.96624,-14.89313 0.0777,18.15436 h 6.56592 v -30.4375 h -5.87012 l -11.16882,18.89502 -11.39856,-18.89502 z"/><path d="m 483.02295,434.56165 v 30.4375 h 6.56592 v -17.95252 l 8.95752,14.69129 h 3.13086 l 8.96624,-14.89313 0.0777,18.15436 h 6.56592 v -30.4375 h -5.87012 l -11.16882,18.89502 -11.39856,-18.89502 z"/><path d="M 545.68164,446.77991 H 531.5498 v -6.56592 h 16.00147 v -5.65234 h -23.00244 v 30.4375 h 23.56738 v -5.65284 H 531.5498 v -7.04394 h 14.13184 z"/><path d="m 573.94482,455.19397 c 1.97119,-0.85498 3.49316,-2.10156 4.56592,-3.73975 1.07227,-1.63721 1.60889,-3.60156 1.60889,-5.8916 0,-3.42041 -1.17432,-6.10938 -3.52197,-8.06592 -2.34814,-1.95703 -5.63867,-2.93506 -9.87061,-2.93506 h -13.00146 v 30.4375 h 7.08789 v -8.52246 h 6.0874 c 0.10492,0 0.20007,-0.0111 0.30389,-0.0123 l 5.91388,8.53479 h 7.56641 l -6.78369,-9.78943 c 0.0138,-0.006 0.0297,-0.01 0.0435,-0.0157 z m -2.56543,-13.52295 c 1.10156,0.91309 1.65234,2.21045 1.65234,3.8916 0,1.68164 -0.55078,2.98584 -1.65234,3.91309 -1.10205,0.92822 -2.7251,1.3916 -4.86963,1.3916 h -5.69629 V 440.3009 h 5.69629 c 2.14453,0 3.76758,0.45703 4.86963,1.37012 z"/><path d="m 593.64258,442.73596 c 0.86963,-0.86963 1.89795,-1.54346 3.0874,-2.02197 1.18799,-0.47803 2.49268,-0.71729 3.91309,-0.71729 1.50684,0 2.90576,0.3042 4.19629,0.91309 1.28955,0.60889 2.44189,1.50781 3.45654,2.6958 l 4.56592,-4.17432 c -1.4502,-1.76758 -3.24707,-3.10889 -5.39209,-4.02197 -2.14551,-0.91309 -4.53711,-1.36963 -7.17432,-1.36963 -2.34814,0 -4.52979,0.38477 -6.54443,1.15234 -2.01514,0.76855 -3.76855,1.86279 -5.26123,3.28271 -1.49316,1.4209 -2.65234,3.0874 -3.47852,5.00049 -0.82617,1.91357 -1.23926,4.01562 -1.23926,6.30518 0,2.29004 0.41309,4.3916 1.23926,6.30469 0.82617,1.91357 1.97852,3.58057 3.45703,5.00049 1.47803,1.4209 3.22412,2.51514 5.23926,3.2832 2.01465,0.76758 4.19629,1.15234 6.54443,1.15234 2.6665,0 5.07227,-0.46436 7.21777,-1.3916 2.14502,-0.92725 3.94189,-2.27539 5.39209,-4.04395 l -4.56592,-4.17432 c -1.01465,1.18896 -2.16699,2.09473 -3.45654,2.71777 -1.29053,0.62354 -2.68945,0.93506 -4.19629,0.93506 -1.42041,0 -2.7251,-0.23926 -3.91309,-0.71777 -1.18945,-0.47803 -2.21777,-1.15234 -3.0874,-2.02197 -0.86963,-0.86963 -1.54395,-1.89795 -2.02197,-3.08691 -0.47852,-1.18848 -0.71729,-2.50732 -0.71729,-3.95703 0,-1.44922 0.23877,-2.76807 0.71729,-3.95703 0.47803,-1.18848 1.15234,-2.21777 2.02197,-3.0874 z"/><path d="m 617.1665,434.56165 h 7.08789 v 30.4375 h -7.08789 z"/><path d="m 640.95166,434.56165 -13.52295,30.4375 h 7.21777 l 2.71252,-6.52246 h 14.09851 l 2.7124,6.52246 h 7.39209 l -13.65332,-30.4375 h -6.95703 z m -1.36853,18.56689 4.82526,-11.60291 4.82513,11.60291 z"/><path d="m 664.73633,464.99915 h 22.26318 v -5.73975 h -15.17529 v -24.69775 h -7.08789 z"/><path d="m 711.2627,442.73596 c 0.86963,-0.86963 1.89795,-1.54346 3.0874,-2.02197 1.18799,-0.47803 2.49268,-0.71729 3.91309,-0.71729 1.50684,0 2.90576,0.3042 4.19629,0.91309 1.28955,0.60889 2.44189,1.50781 3.45654,2.6958 l 4.56592,-4.17432 c -1.4502,-1.76758 -3.24707,-3.10889 -5.39209,-4.02197 -2.14551,-0.91309 -4.53711,-1.36963 -7.17432,-1.36963 -2.34814,0 -4.52979,0.38477 -6.54443,1.15234 -2.01514,0.76855 -3.76855,1.86279 -5.26123,3.28271 -1.49316,1.4209 -2.65234,3.0874 -3.47852,5.00049 -0.82617,1.91357 -1.23926,4.01562 -1.23926,6.30518 0,2.29004 0.41309,4.3916 1.23926,6.30469 0.82617,1.91357 1.97852,3.58057 3.45703,5.00049 1.47803,1.4209 3.22412,2.51514 5.23926,3.2832 2.01465,0.76758 4.19629,1.15234 6.54443,1.15234 2.6665,0 5.07227,-0.46436 7.21777,-1.3916 2.14502,-0.92725 3.94189,-2.27539 5.39209,-4.04395 l -4.56592,-4.17432 c -1.01465,1.18896 -2.16699,2.09473 -3.45654,2.71777 -1.29053,0.62354 -2.68945,0.93506 -4.19629,0.93506 -1.42041,0 -2.7251,-0.23926 -3.91309,-0.71777 -1.18945,-0.47803 -2.21777,-1.15234 -3.0874,-2.02197 -0.86963,-0.86963 -1.54395,-1.89795 -2.02197,-3.08691 -0.47852,-1.18848 -0.71729,-2.50732 -0.71729,-3.95703 0,-1.44922 0.23877,-2.76807 0.71729,-3.95703 0.47803,-1.18848 1.15234,-2.21777 2.02197,-3.0874 z"/><path d="m 755.00537,455.19397 c 1.97119,-0.85498 3.49316,-2.10156 4.56592,-3.73975 1.07227,-1.63721 1.60889,-3.60156 1.60889,-5.8916 0,-3.42041 -1.17432,-6.10938 -3.52197,-8.06592 -2.34814,-1.95703 -5.63867,-2.93506 -9.87061,-2.93506 h -13.00146 v 30.4375 h 7.08789 v -8.52246 h 6.0874 c 0.10492,0 0.20007,-0.0111 0.30389,-0.0123 l 5.91388,8.53479 h 7.56641 l -6.78369,-9.78943 c 0.0139,-0.006 0.0297,-0.01 0.0435,-0.0157 z m -2.56543,-13.52295 c 1.10156,0.91309 1.65234,2.21045 1.65234,3.8916 0,1.68164 -0.55078,2.98584 -1.65234,3.91309 -1.10205,0.92822 -2.7251,1.3916 -4.86963,1.3916 h -5.69629 V 440.3009 h 5.69629 c 2.14453,0 3.76758,0.45703 4.86963,1.37012 z"/><path d="m 787.87842,446.77991 h -14.13184 v -6.56592 h 16.00147 v -5.65234 h -23.00244 v 30.4375 h 23.56738 v -5.65284 h -16.56641 v -7.04394 h 14.13184 z"/><path d="m 818.48975,436.45276 c -2.52197,-1.26074 -5.43506,-1.89111 -8.73975,-1.89111 h -13.82764 v 30.4375 H 809.75 c 3.30469,0 6.21777,-0.63037 8.73975,-1.8916 2.52197,-1.26074 4.49316,-3.02881 5.91357,-5.30469 1.41992,-2.27539 2.13086,-4.94971 2.13086,-8.02246 0,-3.07227 -0.71094,-5.74658 -2.13086,-8.02246 -1.42041,-2.27539 -3.3916,-4.04395 -5.91357,-5.30518 z m -0.32618,18.34961 c -0.82617,1.43506 -1.98584,2.53711 -3.47852,3.30469 -1.49316,0.76855 -3.25439,1.15234 -5.2832,1.15234 h -6.3916 v -18.9585 h 6.3916 c 2.02881,0 3.79004,0.38477 5.2832,1.15234 1.49268,0.76855 2.65234,1.86328 3.47852,3.2832 0.82617,1.42041 1.23926,3.10205 1.23926,5.04395 0,1.91309 -0.41309,3.5874 -1.23926,5.02197 z"/><path d="m 831.83887,434.56165 h 7.08789 v 30.4375 h -7.08789 z"/><path d="m 852.40625,440.3009 v 24.69825 h 7.04395 V 440.3009 h 9.74023 v -5.73925 h -26.52441 v 5.73925 z"/></g></svg></div>
+      <div class="brand-heading">
+        <h1>Sale-Leaseback Cost of Capital Calculator</h1>
+      </div>
+    </div>
+    <div class="eyebrow" style="text-align:right;">
+      Seller / Tenant Analysis<br>
+      <button id="printBtn" style="margin-top:8px;background:var(--cobalt);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;">Save as PDF</button>
+    </div>
+  </header>
+
+  <div class="input-warning" id="inputWarning" style="display:none;"></div>
+
+  <div id="printSummary" class="print-only"></div>
+
+  <div class="grid">
+
+    <!-- INPUT PANEL -->
+    <div class="panel">
+      <p class="section-label">Deal Info</p>
+      <div class="field-row">
+        <div><label for="contactName">Contact Name</label><input type="text" id="contactName" placeholder="e.g. Anthony Perez" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:#fbfcfe;font-family:'IBM Plex Sans',sans-serif;font-size:13px;"></div>
+        <div><label for="contactPhone">Phone</label><input type="text" id="contactPhone" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:#fbfcfe;font-family:'IBM Plex Sans',sans-serif;font-size:13px;"></div>
+      </div>
+      <div class="field-row">
+        <div><label for="contactEmail">Email</label><input type="text" id="contactEmail" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:#fbfcfe;font-family:'IBM Plex Sans',sans-serif;font-size:13px;"></div>
+        <div><label for="propertyAddress">Property Address</label><input type="text" id="propertyAddress" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:#fbfcfe;font-family:'IBM Plex Sans',sans-serif;font-size:13px;"></div>
+      </div>
+
+      <p class="section-label">Property &amp; Sale</p>
+
+      <div class="field" style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="portfolioMode" style="width:auto;">
+        <label for="portfolioMode" style="margin:0;">Portfolio (multiple properties, one aggregate deal)</label>
+      </div>
+
+      <div id="portfolioPanel" style="display:none;margin-bottom:16px;">
+        <div id="portfolioRows"></div>
+        <button type="button" id="addPropertyBtn" style="width:100%;margin-top:6px;padding:8px;background:#eef2f8;border:1px dashed var(--line);border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;color:var(--cobalt);cursor:pointer;">+ Add property</button>
+        <div id="portfolioSummary" style="margin-top:10px;font-size:11.5px;color:var(--muted);"></div>
+        <div class="adv-note" style="margin-top:10px;">Aggregates into a single blended sale price, debt payoff, and weighted-average cap rate below, which then drive the rest of this analysis. Lease term, escalation, loan terms, and the Prop 13 tax module are shared assumptions applied across the portfolio, not modeled per parcel — treat this as a blended estimate, not a parcel-by-parcel schedule.</div>
+      </div>
+
+      <div class="field">
+        <label for="salePrice" id="salePriceLabel">Sale price</label>
+        <div class="input-row"><span class="prefix">$</span><input type="number" id="salePrice" value="5000000" step="10000"></div>
+      </div>
+
+      <div class="field">
+        <label for="existingDebt" id="existingDebtLabel">Existing debt payoff (if any)</label>
+        <div class="input-row"><span class="prefix">$</span><input type="number" id="existingDebt" value="1200000" step="10000"></div>
+      </div>
+
+      <div class="field">
+        <label for="prepayPenalty">Prepayment penalty on existing debt</label>
+        <div class="input-row"><span class="prefix">$</span><input type="number" id="prepayPenalty" value="0" step="1000"></div>
+      </div>
+
+      <div class="field">
+        <label for="txnCosts">Transaction costs (% of sale price)</label>
+        <div class="input-row"><input type="number" id="txnCosts" value="2.5" step="0.1"><span class="suffix">%</span></div>
+      </div>
+
+      <p class="section-label">Sale-Leaseback Terms</p>
+
+      <div class="field">
+        <label for="leaseStructure">Lease structure</label>
+        <select id="leaseStructure" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:#fbfcfe;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);">
+          <option value="nnn" selected>NNN (tenant pays taxes, insurance, maintenance)</option>
+          <option value="gross">Gross / Modified Gross (landlord pays some or all opex)</option>
+        </select>
+      </div>
+
+      <div class="field" id="grossOpexField" style="display:none;">
+        <label for="opexEmbedded">Est. annual opex embedded in gross rent</label>
+        <div class="input-row"><span class="prefix">$</span><input type="number" id="opexEmbedded" value="0" step="1000"></div>
+      </div>
+
+      <div class="field">
+        <label for="capRate" id="capRateLabel">Cap rate (initial annual rent ÷ sale price)</label>
+        <div class="input-row"><input type="number" id="capRate" value="7.25" step="0.05"><span class="suffix">%</span></div>
+      </div>
+
+      <div class="field">
+        <label for="leaseTerm">Initial lease term (years)</label>
+        <div class="input-row"><input type="number" id="leaseTerm" value="15" step="1"><span class="suffix">yrs</span></div>
+      </div>
+
+      <div class="field">
+        <label for="escalation">Annual rent escalation</label>
+        <div class="input-row"><input type="number" id="escalation" value="2.0" step="0.1"><span class="suffix">%</span></div>
+      </div>
+
+      <p class="section-label">Alternative: Conventional Debt</p>
+
+      <div class="field">
+        <label for="loanRate">Interest rate on equivalent loan (stated/quoted)</label>
+        <div class="input-row"><input type="number" id="loanRate" value="8.5" step="0.05"><span class="suffix">%</span></div>
+      </div>
+
+      <div class="field">
+        <label for="recourseType">Loan recourse structure</label>
+        <select id="recourseType" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:#fbfcfe;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);">
+          <option value="full" selected>Full Recourse</option>
+          <option value="partial">Partial Recourse (carve-outs / "bad boy" guaranty)</option>
+          <option value="nonrecourse">Non-Recourse</option>
+        </select>
+      </div>
+
+      <div class="field" id="recoursePremiumField" style="display:none;">
+        <label for="recoursePremium">Rate premium for reduced recourse</label>
+        <div class="input-row"><input type="number" id="recoursePremium" value="75" step="5"><span class="suffix">bps</span></div>
+      </div>
+
+      <div class="field">
+        <label for="loanAmort">Amortization period</label>
+        <div class="input-row"><input type="number" id="loanAmort" value="20" step="1"><span class="suffix">yrs</span></div>
+      </div>
+
+      <div class="field">
+        <label for="loanAmount">Loan amount (typically ≤ property value, net of any equity requirement)</label>
+        <div class="input-row"><span class="prefix">$</span><input type="number" id="loanAmount" value="4000000" step="10000"></div>
+      </div>
+
+      <div class="field">
+        <label for="loanOrigCosts">Origination/points/closing costs (% of loan amount)</label>
+        <div class="input-row"><input type="number" id="loanOrigCosts" value="1.5" step="0.1"><span class="suffix">%</span></div>
+      </div>
+
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results">
+
+      <div class="headline">
+        <div>
+          <div class="metric-label">Net proceeds at close (SLB)</div>
+          <div class="metric-value" id="netProceeds">$0</div>
+          <div class="metric-sub">Sale price less existing debt payoff and transaction costs — capital available for deployment.</div>
+        </div>
+        <div>
+          <div class="metric-label">Implied cost of capital (Yr 1)</div>
+          <div class="metric-value" id="impliedCost">0.0%</div>
+          <div class="metric-sub">The cap rate, read as a coupon on the capital raised — before escalations compound it.</div>
+        </div>
+      </div>
+
+      <div class="breakeven">
+        <div>
+          <div class="be-label">Breakeven Cap Rate</div>
+          <div class="be-value" id="breakevenRate">0.00%</div>
+        </div>
+        <div class="be-note" id="breakevenNote">The cap rate at which Year 1 SLB rent exactly equals the conventional loan's annual debt service.</div>
+      </div>
+
+      <div class="compare">
+        <h2>Annual Cost — SLB Rent vs. Conventional Debt Service</h2>
+
+        <div class="bar-row">
+          <div class="bar-top">
+            <div class="bar-name">Sale-Leaseback<span class="tag">YEAR 1 RENT</span></div>
+            <div class="bar-amount" id="slbAmt">$0</div>
+          </div>
+          <div class="bar-track"><div class="bar-fill slb" id="slbBar" style="width:0%"></div></div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-top">
+            <div class="bar-name">Conventional Loan<span class="tag">ANNUAL DEBT SERVICE (P&amp;I)</span></div>
+            <div class="bar-amount" id="debtAmt">$0</div>
+          </div>
+          <div class="bar-track"><div class="bar-fill debt" id="debtBar" style="width:0%"></div></div>
+        </div>
+
+        <div class="delta-note" id="deltaNote"></div>
+      </div>
+
+      <div class="compare">
+        <h2>Structural Comparison Over the Term</h2>
+        <table class="detail">
+          <tr><th>Metric</th><th>Sale-Leaseback</th><th>Conventional Debt</th></tr>
+          <tbody id="detailBody"></tbody>
+        </table>
+      </div>
+
+      <div class="compare">
+        <h2>Cap Rate Sensitivity</h2>
+        <table class="sens">
+          <tr><th>Cap Rate</th><th>Year 1 Rent</th><th>vs. Debt Service</th><th>Lower Cost</th></tr>
+          <tbody id="sensBody"></tbody>
+        </table>
+      </div>
+
+      <div class="advanced-toggle" id="advToggle">
+        <span>Advanced Analysis — NPV, Effective Cost of Capital, Residual Value, Refinance Exposure</span>
+        <span class="chev">›</span>
+      </div>
+
+      <div class="advanced-body panel" id="advBody">
+
+        <p class="section-label" style="margin-top:0;">Present Value Comparison</p>
+        <div class="adv-inputs">
+          <div class="field">
+            <label for="discountRate">Discount rate (for PV comparison)</label>
+            <div class="input-row"><input type="number" id="discountRate" value="8.5" step="0.1"><span class="suffix">%</span></div>
+          </div>
+          <div class="field">
+            <label for="apprRate">Assumed annual property appreciation</label>
+            <div class="input-row"><input type="number" id="apprRate" value="3.0" step="0.1"><span class="suffix">%</span></div>
+          </div>
+        </div>
+        <table class="detail">
+          <tr><th>Metric</th><th>Sale-Leaseback</th><th>Conventional Debt</th></tr>
+          <tbody id="advDetailBody"></tbody>
+        </table>
+        <div class="adv-note">
+          PV of rent/debt service streams discounted at the rate above. Effective cost of capital solves for the single annualized rate at which the present value of the full escalating rent stream equals net SLB proceeds — a truer figure than the Year 1 cap rate once escalations compound. Residual value estimates what ownership of the property would be worth at term end under the loan scenario, forfeited under the SLB. Refinance exposure shows the loan's remaining balance if its amortization period runs longer than the lease term being compared.
+        </div>
+        <p class="section-label">California Property Tax Reassessment (Prop 13)</p>
+        <div class="adv-inputs">
+          <div class="field">
+            <label for="currentTaxBill">Current annual property tax bill</label>
+            <div class="input-row"><span class="prefix">$</span><input type="number" id="currentTaxBill" value="35000" step="500"></div>
+          </div>
+          <div class="field">
+            <label for="reassessRate">Est. post-sale effective tax rate</label>
+            <div class="input-row"><input type="number" id="reassessRate" value="1.20" step="0.05"><span class="suffix">%</span></div>
+          </div>
+        </div>
+        <table class="detail">
+          <tr><th>Metric</th><th>Sale-Leaseback</th><th>Conventional Debt</th></tr>
+          <tbody id="taxDetailBody"></tbody>
+        </table>
+        <div class="adv-note">
+          A sale triggers a change-of-ownership reassessment under Prop 13, resetting the property tax basis to current market value. Under a <b>NNN</b> lease structure, that new tax bill passes through to the seller as tenant — this cost is specific to the SLB path and does not apply under the loan/retained-ownership alternative, since no sale occurs. If the lease is Gross/Modified Gross, some or all of this cost lands on the landlord instead and would be priced into the rent rather than billed separately — check the actual lease before treating this as a pass-through cost.
+        </div>
+
+      </div>
+
+      <div class="advanced-toggle" id="compareToggle">
+        <span>Compare Saved Scenarios</span>
+        <span class="chev">›</span>
+      </div>
+      <div class="advanced-body panel" id="compareBody">
+        <p class="section-label" style="margin-top:0;">Saved Scenarios<span id="compareScopeNote" style="font-weight:400;text-transform:none;letter-spacing:normal;color:var(--muted);"></span></p>
+        <div id="compareList" style="font-size:12.5px;color:var(--muted);">Loading…</div>
+        <button type="button" id="compareRunBtn" style="margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:4px;padding:9px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;" disabled>Compare Selected (0)</button>
+        <div id="compareResults" style="margin-top:16px;"></div>
+      </div>
+
+      <div class="disclaimer">
+        Illustrative only. Assumes straight-line rent escalation and level P&amp;I amortization; does not incorporate tax treatment, depreciation loss on the sold asset, or covenant terms specific to a given lease or credit agreement. Not a loan offer, commitment, or investment recommendation. Cobalt Commercial Credit is an advisory and placement firm; actual terms depend on lender/counterparty underwriting.
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function fmt(n){
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+// Pure recompute of headline metrics from a saved scenario's raw inputs (id -> value strings),
+// used only by the Compare Saved Scenarios panel. Deliberately kept separate from calc() so
+// building the comparison view can't introduce a regression in the live calculator above.
+function computeKeyMetrics(inputs){
+  const num = k => parseFloat(inputs[k]) || 0;
+  const salePrice = Math.max(num('salePrice'), 0);
+  const existingDebt = num('existingDebt');
+  const prepayPenalty = num('prepayPenalty');
+  const txnCostsPct = num('txnCosts');
+  const capRate = Math.max(num('capRate'), 0);
+  const leaseTerm = Math.max(num('leaseTerm') || 1, 1);
+  const escalation = num('escalation');
+  const loanRate = Math.max(num('loanRate'), 0);
+  const loanAmort = Math.max(num('loanAmort') || 1, 1);
+  const loanAmount = Math.max(num('loanAmount'), 0);
+  const recourseType = inputs.recourseType || 'full';
+  const recoursePremiumBps = Math.max(num('recoursePremium'), 0);
+  const recoursePremiumPct = recourseType === 'nonrecourse' ? recoursePremiumBps/100 : recourseType === 'partial' ? recoursePremiumBps/200 : 0;
+  const effectiveLoanRate = loanRate + recoursePremiumPct;
+
+  const txnCostsAmt = salePrice * (txnCostsPct/100);
+  const netProceeds = salePrice - existingDebt - prepayPenalty - txnCostsAmt;
+  const year1Rent = salePrice * (capRate/100);
+
+  const r = effectiveLoanRate/100;
+  const annualDebtService = r === 0 ? loanAmount/loanAmort : loanAmount * r / (1 - Math.pow(1+r, -loanAmort));
+  const breakevenRate = salePrice > 0 ? (annualDebtService/salePrice*100) : 0;
+
+  function pvRentStream(rate, term, escalationPct, year1){
+    let pv = 0, rent = year1;
+    for(let y=1; y<=term; y++){ pv += rent/Math.pow(1+rate,y); rent = rent*(1+escalationPct/100); }
+    return pv;
+  }
+  function solveEffectiveRate(target, term, escalationPct, year1){
+    let lo = -0.20, hi = 1.00;
+    for(let i=0; i<80; i++){ const mid=(lo+hi)/2; if(pvRentStream(mid,term,escalationPct,year1) > target){ lo=mid; } else { hi=mid; } }
+    return (lo+hi)/2;
+  }
+  const effRate = netProceeds > 0 ? solveEffectiveRate(netProceeds, leaseTerm, escalation, year1Rent) * 100 : 0;
+
+  return { salePrice, netProceeds, capRate, leaseTerm, escalation, year1Rent, annualDebtService,
+    breakevenRate, effRate, effectiveLoanRate, recourseType };
+}
+
+function fmtPct(n){
+  return n.toFixed(2) + '%';
+}
+// ============ Portfolio mode: multiple properties rolled into one blended deal ============
+let portfolioRowSeq = 0;
+function addPropertyRow(label, salePrice, existingDebt, capRate){
+  portfolioRowSeq++;
+  const id = 'prow' + portfolioRowSeq;
+  const div = document.createElement('div');
+  div.className = 'portfolio-row';
+  div.id = id;
+  div.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;';
+  div.innerHTML = `
+    <input type="text" class="p-label" placeholder="Property label" value="${label||''}" style="flex:1.4;min-width:110px;padding:8px 9px;border:1px solid var(--line);border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;">
+    <div class="input-row" style="flex:1;min-width:110px;"><span class="prefix">$</span><input type="number" class="p-price" value="${salePrice!=null?salePrice:''}" placeholder="Sale price" step="10000"></div>
+    <div class="input-row" style="flex:1;min-width:110px;"><span class="prefix">$</span><input type="number" class="p-debt" value="${existingDebt!=null?existingDebt:''}" placeholder="Debt payoff" step="10000"></div>
+    <div class="input-row" style="flex:0.6;min-width:80px;"><input type="number" class="p-cap" value="${capRate!=null?capRate:''}" placeholder="Cap %" step="0.05"><span class="suffix">%</span></div>
+    <button type="button" class="p-remove" style="background:none;border:none;color:var(--bad);font-size:16px;cursor:pointer;padding:0 4px;">×</button>
+  `;
+  document.getElementById('portfolioRows').appendChild(div);
+  div.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calc));
+  div.querySelector('.p-remove').addEventListener('click', function(){ div.remove(); calc(); });
+}
+function aggregatePortfolio(){
+  const rows = Array.from(document.querySelectorAll('.portfolio-row'));
+  let totalPrice = 0, totalDebt = 0, weightedCapSum = 0;
+  rows.forEach(row => {
+    const price = parseFloat(row.querySelector('.p-price').value) || 0;
+    const debt = parseFloat(row.querySelector('.p-debt').value) || 0;
+    const cap = parseFloat(row.querySelector('.p-cap').value) || 0;
+    totalPrice += price;
+    totalDebt += debt;
+    weightedCapSum += price * cap;
+  });
+  const blendedCap = totalPrice > 0 ? weightedCapSum / totalPrice : 0;
+  document.getElementById('salePrice').value = totalPrice;
+  document.getElementById('existingDebt').value = totalDebt;
+  document.getElementById('capRate').value = blendedCap.toFixed(3);
+  const summaryEl = document.getElementById('portfolioSummary');
+  if(rows.length === 0){
+    summaryEl.textContent = 'No properties added yet.';
+  } else {
+    summaryEl.innerHTML = rows.map(row => {
+      const price = parseFloat(row.querySelector('.p-price').value) || 0;
+      const share = totalPrice > 0 ? (price/totalPrice*100) : 0;
+      const lbl = row.querySelector('.p-label').value || 'Untitled property';
+      return `<div style="display:flex;justify-content:space-between;padding:2px 0;">${lbl}<span>${share.toFixed(1)}% of portfolio</span></div>`;
+    }).join('') + `<div style="display:flex;justify-content:space-between;padding-top:6px;margin-top:4px;border-top:1px dashed var(--line);font-weight:600;color:var(--navy);">${rows.length} propert${rows.length===1?'y':'ies'} — ${fmt(totalPrice)} total, ${fmtPct(blendedCap)} blended cap rate</div>`;
+  }
+}
+document.getElementById('addPropertyBtn').addEventListener('click', function(){ addPropertyRow(); calc(); });
+document.getElementById('portfolioMode').addEventListener('change', function(){
+  const on = this.checked;
+  document.getElementById('portfolioPanel').style.display = on ? 'block' : 'none';
+  document.getElementById('salePrice').readOnly = on;
+  document.getElementById('existingDebt').readOnly = on;
+  document.getElementById('capRate').readOnly = on;
+  document.getElementById('salePriceLabel').textContent = on ? 'Sale price (aggregate — from portfolio below)' : 'Sale price';
+  document.getElementById('existingDebtLabel').textContent = on ? 'Existing debt payoff (aggregate — from portfolio below)' : 'Existing debt payoff (if any)';
+  document.getElementById('capRateLabel').textContent = on ? 'Cap rate (blended — from portfolio below)' : 'Cap rate (initial annual rent ÷ sale price)';
+  if(on && document.querySelectorAll('.portfolio-row').length === 0){
+    addPropertyRow('Property 1', 5000000, 1200000, 7.25);
+  }
+  calc();
+});
+// Remaining balance on a level-payment amortizing loan after `elapsed` years.
+// Shared by calc() (principal repaid) and calcAdvanced() (refinance/balloon exposure).
+function remainingBalance(principal, rate, amortYears, elapsed){
+  if(elapsed >= amortYears) return 0;
+  if(rate === 0) return principal * (1 - elapsed/amortYears);
+  const pmt = principal * rate / (1 - Math.pow(1+rate, -amortYears));
+  const bal = principal * Math.pow(1+rate, elapsed) - pmt * ((Math.pow(1+rate, elapsed) - 1) / rate);
+  return Math.max(bal, 0);
+}
+
+function calc(){
+  if(document.getElementById('portfolioMode') && document.getElementById('portfolioMode').checked){
+    aggregatePortfolio();
+  }
+  const rawSalePrice = parseFloat(document.getElementById('salePrice').value);
+  const rawLeaseTerm = parseFloat(document.getElementById('leaseTerm').value);
+  const rawLoanAmort  = parseFloat(document.getElementById('loanAmort').value);
+  const rawCapRate    = parseFloat(document.getElementById('capRate').value);
+  const rawLoanRate    = parseFloat(document.getElementById('loanRate').value);
+  const rawLoanAmount  = parseFloat(document.getElementById('loanAmount').value);
+
+  const issues = [];
+  if(!(rawSalePrice > 0)) issues.push('Sale price must be greater than $0.');
+  if(!(rawLeaseTerm > 0)) issues.push('Lease term must be at least 1 year.');
+  if(!(rawLoanAmort > 0)) issues.push('Loan amortization period must be at least 1 year.');
+  if(rawCapRate < 0) issues.push('Cap rate cannot be negative.');
+  if(rawLoanRate < 0) issues.push('Loan interest rate cannot be negative.');
+  if(!(rawLoanAmount >= 0)) issues.push('Loan amount cannot be negative.');
+
+  const warningEl = document.getElementById('inputWarning');
+  if(issues.length > 0){
+    warningEl.style.display = 'block';
+    warningEl.innerHTML = '<b>Check your inputs:</b> ' + issues.join(' ') + ' Figures below use fallback values until this is corrected.';
+  } else {
+    warningEl.style.display = 'none';
+  }
+
+  const salePrice   = Math.max(parseFloat(document.getElementById('salePrice').value) || 0, 0);
+  const existingDebt= parseFloat(document.getElementById('existingDebt').value) || 0;
+  const prepayPenalty = parseFloat(document.getElementById('prepayPenalty').value) || 0;
+  const txnCostsPct = parseFloat(document.getElementById('txnCosts').value) || 0;
+  const capRate     = Math.max(parseFloat(document.getElementById('capRate').value) || 0, 0);
+  const leaseTerm   = Math.max(parseFloat(document.getElementById('leaseTerm').value) || 1, 1);
+  const escalation  = parseFloat(document.getElementById('escalation').value) || 0;
+  const leaseStructure = document.getElementById('leaseStructure').value;
+  const opexEmbedded = parseFloat(document.getElementById('opexEmbedded').value) || 0;
+  const loanRate    = Math.max(parseFloat(document.getElementById('loanRate').value) || 0, 0);
+  const loanAmort   = Math.max(parseFloat(document.getElementById('loanAmort').value) || 1, 1);
+  const loanAmount  = Math.max(parseFloat(document.getElementById('loanAmount').value) || 0, 0);
+  const loanOrigCostsPct = parseFloat(document.getElementById('loanOrigCosts').value) || 0;
+  const recourseType = document.getElementById('recourseType').value;
+  const recoursePremiumBps = Math.max(parseFloat(document.getElementById('recoursePremium').value) || 0, 0);
+  // Non-recourse loans typically price with a rate premium since the lender's only remedy is the
+  // property; partial recourse (carve-out/"bad boy" guaranty) sits between full recourse and non-recourse.
+  const recoursePremiumPct = recourseType === 'nonrecourse' ? recoursePremiumBps/100
+    : recourseType === 'partial' ? recoursePremiumBps/200
+    : 0;
+  const effectiveLoanRate = loanRate + recoursePremiumPct;
+
+  // Net proceeds
+  const txnCostsAmt = salePrice * (txnCostsPct/100);
+  const netProceeds = salePrice - existingDebt - prepayPenalty - txnCostsAmt;
+
+  // Net loan proceeds after origination/points/closing costs
+  const loanOrigCostsAmt = loanAmount * (loanOrigCostsPct/100);
+  const netLoanProceeds = loanAmount - loanOrigCostsAmt;
+
+  // SLB year-1 rent = implied cost of capital in dollar terms
+  const year1Rent = salePrice * (capRate/100);
+
+  // SLB total rent paid over lease term, with escalation
+  const compTerm = Math.min(leaseTerm, loanAmort); // comparable term = shorter of lease term / loan amortization
+  let totalRent = 0;
+  let rent = year1Rent;
+  let rentThroughCompTerm = 0;
+  for(let y=0; y<leaseTerm; y++){
+    totalRent += rent;
+    if(y < compTerm) rentThroughCompTerm = totalRent;
+    rent = rent * (1 + escalation/100);
+  }
+  const finalYearRent = rent / (1+escalation/100); // last year's actual payment
+
+  // Conventional loan: level annual P&I over amortization period
+  const r = effectiveLoanRate/100;
+  let annualDebtService;
+  if(r === 0){
+    annualDebtService = loanAmount / loanAmort;
+  } else {
+    annualDebtService = loanAmount * r / (1 - Math.pow(1+r, -loanAmort));
+  }
+  // total P&I paid over the SLB's comparable term (min of leaseTerm, loanAmort)
+  const totalDebtServiceOverTerm = annualDebtService * compTerm;
+  const totalDebtServiceFullAmort = annualDebtService * loanAmort;
+  const totalInterestOverAmort = totalDebtServiceFullAmort - loanAmount;
+
+  // Effective average annual cost of SLB over term (for apples-to-apples vs level debt service)
+  const avgAnnualRent = totalRent / leaseTerm;
+
+  // Render headline
+  document.getElementById('netProceeds').textContent = fmt(netProceeds);
+  document.getElementById('impliedCost').textContent = fmtPct(capRate);
+  const trueCapRate = leaseStructure === 'gross' && salePrice > 0
+    ? ((year1Rent - opexEmbedded) / salePrice) * 100
+    : capRate;
+  const subEl = document.querySelector('.headline .metric-sub:last-child');
+  if(leaseStructure === 'gross' && opexEmbedded > 0){
+    subEl.innerHTML = `Stated cap rate is ${fmtPct(capRate)}, but ${fmt(opexEmbedded)}/yr of that rent covers landlord-paid opex, not capital. True cost of capital: <b>${fmtPct(trueCapRate)}</b>.`;
+  } else {
+    subEl.textContent = leaseStructure === 'nnn'
+      ? 'NNN assumed — tenant pays opex directly, so rent is pure return on capital.'
+      : 'The cap rate, read as a coupon on the capital raised — before escalations compound it.';
+  }
+
+  // Render bars
+  document.getElementById('slbAmt').textContent = fmt(year1Rent);
+  document.getElementById('debtAmt').textContent = fmt(annualDebtService);
+  const maxVal = Math.max(year1Rent, annualDebtService, 1);
+  document.getElementById('slbBar').style.width = (year1Rent/maxVal*100) + '%';
+  document.getElementById('slbBar').textContent = fmtPct(capRate);
+  document.getElementById('debtBar').style.width = (annualDebtService/maxVal*100) + '%';
+  document.getElementById('debtBar').textContent = fmtPct(effectiveLoanRate) + (recoursePremiumPct>0 ? ' eff. rate' : ' rate');
+
+  const diff = annualDebtService - year1Rent;
+  const cheaper = diff >= 0 ? 'the sale-leaseback' : 'the conventional loan';
+  const gap = Math.abs(diff);
+  document.getElementById('deltaNote').innerHTML =
+    `In Year 1, <b>${cheaper}</b> carries the lower annual cost by <b>${fmt(gap)}</b>. ` +
+    `Note the loan raises ${fmt(netLoanProceeds)} of capital net of origination costs while the SLB raises ${fmt(netProceeds)} net — ` +
+    `compare cost per dollar raised, not just the annual payment, when the two capital amounts differ.`;
+
+  // Detail table
+  const principalRepaid = loanAmount - remainingBalance(loanAmount, r, loanAmort, compTerm);
+  const recourseLabel = {full:'Full Recourse', partial:'Partial Recourse', nonrecourse:'Non-Recourse'}[recourseType];
+  const recourseNote = recourseType === 'full'
+    ? 'Personal/entity guaranty typically required — lender can pursue borrower/guarantor beyond the property'
+    : recourseType === 'partial'
+      ? 'Limited guaranty — typically carve-outs only (fraud, waste, environmental, bankruptcy)'
+      : 'Lender\'s remedy limited to the property — no personal guaranty, but rate/underwriting typically stricter';
+  const rateRowRight = recoursePremiumPct > 0
+    ? `${fmtPct(loanRate)} stated + ${recoursePremiumBps}bps (${recourseLabel}) = ${fmtPct(effectiveLoanRate)} effective, level P&I`
+    : fmtPct(effectiveLoanRate) + ' fixed, level P&I';
+  const rows = [
+    ['One-time transaction costs', fmt(txnCostsAmt + prepayPenalty) + (prepayPenalty > 0 ? ' (incl. ' + fmt(prepayPenalty) + ' prepay penalty)' : ''), fmt(loanOrigCostsAmt) + ' (origination/points/closing)'],
+    ['Capital raised (net of transaction costs)', fmt(netProceeds), fmt(netLoanProceeds)],
+    ['Year 1 annual cost', fmt(year1Rent), fmt(annualDebtService)],
+    [`Final year (Yr ${leaseTerm}) annual cost`, fmt(finalYearRent), fmt(annualDebtService)],
+    ['Total cost over comparable term (' + compTerm + ' yrs)', fmt(rentThroughCompTerm), fmt(totalDebtServiceOverTerm)],
+    ['Rate structure', 'Fixed initial rate, ' + escalation.toFixed(1) + '%/yr escalator', rateRowRight],
+    ['Principal repaid at term end', 'N/A — no amortization; asset not owned', fmt(principalRepaid) + ' est. paydown'],
+    ['Balance sheet treatment', 'Operating obligation (lease liability)', 'Debt (secured by property)'],
+    ['Recourse / guaranty exposure', 'None — not a loan, no personal guaranty', `${recourseLabel} — ${recourseNote}`],
+    ['Asset ownership at term end', 'None — reversion to landlord absent renewal/purchase option', 'Retained, subject to remaining loan balance'],
+  ];
+
+  document.getElementById('detailBody').innerHTML = rows.map(r =>
+    `<tr><td class="label">${r[0]}</td><td class="hi">${r[1]}</td><td class="hi">${r[2]}</td></tr>`
+  ).join('');
+
+  // ---------- Breakeven cap rate ----------
+  // Rate at which Year 1 SLB rent == annual debt service
+  const breakevenRate = salePrice > 0 ? (annualDebtService / salePrice * 100) : 0;
+  document.getElementById('breakevenRate').textContent = fmtPct(breakevenRate);
+  const beDiff = capRate - breakevenRate;
+  const beDir = beDiff > 0 ? 'above' : (beDiff < 0 ? 'below' : 'at');
+  document.getElementById('breakevenNote').innerHTML =
+    beDiff === 0
+      ? `Your assumed cap rate sits exactly at breakeven with the loan's debt service.`
+      : `Your assumed <b>${fmtPct(capRate)}</b> cap rate is <b>${Math.abs(beDiff).toFixed(2)} pts ${beDir}</b> breakeven — ` +
+        (beDiff > 0
+          ? `the SLB costs more in Year 1 than the loan at this cap rate.`
+          : `the SLB costs less in Year 1 than the loan at this cap rate.`);
+
+  // ---------- Cap rate sensitivity table ----------
+  const steps = [-1.0, -0.5, 0, 0.5, 1.0];
+  const sensRows = steps.map(delta => {
+    const testRate = capRate + delta;
+    const testRent = salePrice * (testRate/100);
+    const testDiff = annualDebtService - testRent;
+    const winner = testDiff >= 0 ? 'SLB' : 'Loan';
+    const winClass = testDiff >= 0 ? 'win-slb' : 'win-debt';
+    return {delta, testRate, testRent, testDiff, winner, winClass};
+  });
+  document.getElementById('sensBody').innerHTML = sensRows.map(row => {
+    const isCurrent = row.delta === 0;
+    return `<tr class="${isCurrent ? 'current-row' : ''}">
+      <td>${row.testRate.toFixed(2)}%${isCurrent ? ' (current)' : ''}</td>
+      <td>${fmt(row.testRent)}</td>
+      <td>${row.testDiff >= 0 ? '+' : ''}${fmt(row.testDiff)}</td>
+      <td class="${row.winClass}">${row.winner}</td>
+    </tr>`;
+  }).join('');
+
+  // ---------- Advanced: PV comparison, effective cost of capital, residual value, refinance exposure ----------
+  calcAdvanced({salePrice, existingDebt, netProceeds, capRate, leaseTerm, escalation, year1Rent,
+                loanRate: effectiveLoanRate, loanAmort, loanAmount, annualDebtService, compTerm});
+
+  buildPrintSummary({salePrice, netProceeds, capRate, trueCapRate, leaseStructure, leaseTerm, escalation,
+                      year1Rent, annualDebtService, breakevenRate, loanRate: effectiveLoanRate, loanAmount,
+                      recourseType, recoursePremiumPct});
+}
+
+function calcAdvanced(ctx){
+  const discountRate = parseFloat(document.getElementById('discountRate').value) || 0;
+  const apprRate = parseFloat(document.getElementById('apprRate').value) || 0;
+  const d = discountRate/100;
+
+  // PV of rent stream (escalating) over lease term
+  function pvRentStream(rate, term, escalationPct, year1){
+    let pv = 0, rent = year1;
+    for(let y=1; y<=term; y++){
+      pv += rent / Math.pow(1+rate, y);
+      rent = rent * (1 + escalationPct/100);
+    }
+    return pv;
+  }
+  const pvRent = pvRentStream(d, ctx.leaseTerm, ctx.escalation, ctx.year1Rent);
+
+  // PV of level debt service over comparable term
+  let pvDebt = 0;
+  for(let y=1; y<=ctx.compTerm; y++){
+    pvDebt += ctx.annualDebtService / Math.pow(1+d, y);
+  }
+
+  // Effective annualized cost of capital: solve r such that PV(escalating rent stream, r) = netProceeds
+  function solveEffectiveRate(target, term, escalationPct, year1){
+    let lo = -0.20, hi = 1.00;
+    for(let i=0; i<80; i++){
+      const mid = (lo+hi)/2;
+      const pv = pvRentStream(mid, term, escalationPct, year1);
+      if(pv > target){ lo = mid; } else { hi = mid; }
+    }
+    return (lo+hi)/2;
+  }
+  const effRate = ctx.netProceeds > 0 ? solveEffectiveRate(ctx.netProceeds, ctx.leaseTerm, ctx.escalation, ctx.year1Rent) * 100 : 0;
+
+  // Residual value forfeited (property value at term end under appreciation, vs SLB reversion)
+  const residualValue = ctx.salePrice * Math.pow(1 + apprRate/100, ctx.leaseTerm);
+
+  // Refinance / balloon exposure: remaining loan balance if loanAmort > leaseTerm (or vice versa)
+  const r = ctx.loanRate/100;
+  const balloonBal = remainingBalance(ctx.loanAmount, r, ctx.loanAmort, ctx.leaseTerm);
+  const mismatch = ctx.loanAmort !== ctx.leaseTerm;
+
+  const rows = [
+    ['PV of total payments (@ ' + discountRate.toFixed(1) + '% discount rate)', fmt(pvRent), fmt(pvDebt)],
+    ['Effective annualized cost of capital', fmtPct(effRate), fmtPct(ctx.loanRate)],
+    [`Est. property value in Yr ${ctx.leaseTerm} (@ ${apprRate.toFixed(1)}%/yr appreciation)`, 'Forfeited — reverts to landlord', fmt(residualValue) + ' (retained, less debt)'],
+    ['Loan balance outstanding at Yr ' + ctx.leaseTerm, 'N/A', mismatch ? fmt(balloonBal) + (balloonBal > 0 ? ' — refinance/balloon exposure' : ' — fully amortized') : '$0 — fully amortized'],
+  ];
+  document.getElementById('advDetailBody').innerHTML = rows.map(r2 =>
+    `<tr><td class="label">${r2[0]}</td><td class="hi">${r2[1]}</td><td class="hi">${r2[2]}</td></tr>`
+  ).join('');
+
+  // ---------- CA property tax reassessment (Prop 13) ----------
+  const currentTaxBill = parseFloat(document.getElementById('currentTaxBill').value) || 0;
+  const reassessRate = parseFloat(document.getElementById('reassessRate').value) || 0;
+  const reassessedTax = ctx.salePrice * (reassessRate/100);
+  const taxDelta = reassessedTax - currentTaxBill;
+
+  const taxRows = [
+    ['Current annual property tax bill', fmt(currentTaxBill), fmt(currentTaxBill)],
+    ['Reassessed tax bill post-sale (@ ' + reassessRate.toFixed(2) + '%)', fmt(reassessedTax), 'N/A — no sale, no reassessment'],
+    ['Change in annual tax cost', (taxDelta >= 0 ? '+' : '') + fmt(taxDelta) + (taxDelta >= 0 ? ' — added occupancy cost' : ' — reduction'), '$0 — basis unchanged'],
+  ];
+  document.getElementById('taxDetailBody').innerHTML = taxRows.map(r2 =>
+    `<tr><td class="label">${r2[0]}</td><td class="hi">${r2[1]}</td><td class="hi">${r2[2]}</td></tr>`
+  ).join('');
+}
+
+function buildPrintSummary(ctx){
+  const logoNode = document.querySelector('.brand svg');
+  const logoHTML = logoNode ? logoNode.outerHTML : '';
+  const today = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+  const preparedFor = (document.getElementById('preparedFor') && document.getElementById('preparedFor').value) || '';
+  const contactName = (document.getElementById('contactName') && document.getElementById('contactName').value) || '';
+  const contactPhone = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value) || '';
+  const contactEmail = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value) || '';
+  const propertyAddress = (document.getElementById('propertyAddress') && document.getElementById('propertyAddress').value) || '';
+  const contactLine = [contactName, contactPhone, contactEmail].filter(Boolean).join('  ·  ');
+
+  const cheaper = ctx.annualDebtService >= ctx.year1Rent ? 'Sale-Leaseback' : 'Conventional Loan';
+  const gap = Math.abs(ctx.annualDebtService - ctx.year1Rent);
+
+  const structureLabel = ctx.leaseStructure === 'gross' ? 'Gross / Modified Gross' : 'NNN';
+
+  document.getElementById('printSummary').innerHTML = `
+    <div class="ps-header">
+      <div style="display:flex;align-items:center;gap:14px;">
+        ${logoHTML}
+        <div>
+          <div class="ps-title">Sale-Leaseback Cost of Capital Summary</div>
+          ${preparedFor ? `<div style="font-size:12px;color:var(--muted);margin-top:2px;">Prepared for ${preparedFor}</div>` : ''}
+        </div>
+      </div>
+      <div class="ps-date">Prepared ${today}</div>
+    </div>
+    ${(contactLine || propertyAddress) ? `<div style="font-size:11.5px;color:var(--muted);margin:-8px 0 16px;">${[propertyAddress, contactLine].filter(Boolean).join('  ·  ')}</div>` : ''}
+
+    <div class="ps-headline">
+      <div><div class="ps-h-label">Net Proceeds at Close</div><div class="ps-h-value">${fmt(ctx.netProceeds)}</div></div>
+      <div><div class="ps-h-label">Implied Cost of Capital</div><div class="ps-h-value">${fmtPct(ctx.trueCapRate)}</div></div>
+      <div><div class="ps-h-label">Breakeven Cap Rate</div><div class="ps-h-value">${fmtPct(ctx.breakevenRate)}</div></div>
+    </div>
+
+    <div class="ps-section">
+      <h3>Assumptions</h3>
+      <div class="ps-grid">
+        <div><span>Sale price</span><span>${fmt(ctx.salePrice)}</span></div>
+        <div><span>Lease structure</span><span>${structureLabel}</span></div>
+        <div><span>Cap rate (stated)</span><span>${fmtPct(ctx.capRate)}</span></div>
+        <div><span>Lease term</span><span>${ctx.leaseTerm} yrs</span></div>
+        <div><span>Annual escalation</span><span>${ctx.escalation.toFixed(1)}%</span></div>
+        <div><span>Alt. loan rate ${ctx.recoursePremiumPct>0?'(effective)':''}</span><span>${fmtPct(ctx.loanRate)}</span></div>
+        <div><span>Alt. loan amount</span><span>${fmt(ctx.loanAmount)}</span></div>
+        <div><span>Loan recourse structure</span><span>${({full:'Full Recourse',partial:'Partial Recourse',nonrecourse:'Non-Recourse'})[ctx.recourseType]}</span></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <h3>Year 1 Annual Cost Comparison</h3>
+      <div class="ps-grid">
+        <div><span>Sale-Leaseback rent</span><span>${fmt(ctx.year1Rent)}</span></div>
+        <div><span>Conventional loan debt service</span><span>${fmt(ctx.annualDebtService)}</span></div>
+        <div><span>Lower Year 1 cost</span><span>${cheaper} by ${fmt(gap)}</span></div>
+        <div><span>Breakeven cap rate</span><span>${fmtPct(ctx.breakevenRate)}</span></div>
+      </div>
+    </div>
+
+    ${document.getElementById('portfolioMode').checked ? `
+    <div class="ps-section">
+      <h3>Portfolio Composition</h3>
+      <div style="font-size:12px;color:var(--text);">${document.getElementById('portfolioSummary').innerHTML}</div>
+    </div>` : ''}
+
+    <div class="ps-section">
+      <h3>Structural Comparison Over the Term</h3>
+      <table class="detail" style="width:100%;"><thead><tr><th>Metric</th><th>Sale-Leaseback</th><th>Conventional Debt</th></tr></thead>
+        <tbody>${document.getElementById('detailBody').innerHTML}</tbody></table>
+    </div>
+
+    <div class="ps-section">
+      <h3>Cap Rate Sensitivity</h3>
+      <table class="sens" style="width:100%;"><thead><tr><th>Cap Rate</th><th>Year 1 Rent</th><th>vs. Debt Service</th><th>Lower Cost</th></tr></thead>
+        <tbody>${document.getElementById('sensBody').innerHTML}</tbody></table>
+    </div>
+
+    <div class="ps-section">
+      <h3>Advanced Analysis — NPV, Effective Cost of Capital, Residual Value, Refinance Exposure</h3>
+      <table class="detail" style="width:100%;"><thead><tr><th>Metric</th><th>Sale-Leaseback</th><th>Conventional Debt</th></tr></thead>
+        <tbody>${document.getElementById('advDetailBody').innerHTML}</tbody></table>
+      <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">Effective cost of capital solves for the single annualized rate at which the present value of the full escalating rent stream equals net SLB proceeds — a truer figure than the Year 1 cap rate once escalations compound.</div>
+    </div>
+
+    <div class="ps-section">
+      <h3>California Property Tax Reassessment (Prop 13)</h3>
+      <table class="detail" style="width:100%;"><thead><tr><th>Metric</th><th>Sale-Leaseback</th><th>Conventional Debt</th></tr></thead>
+        <tbody>${document.getElementById('taxDetailBody').innerHTML}</tbody></table>
+      <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">A sale triggers a change-of-ownership reassessment under Prop 13. Under a NNN lease this cost passes through to the seller as tenant; under Gross/Modified Gross it would typically be priced into rent instead — confirm against the actual lease.</div>
+    </div>
+
+    <div class="ps-footnote">
+      Illustrative only. Assumes straight-line rent escalation and level P&amp;I amortization; does not incorporate tax treatment, depreciation loss on the sold asset, or covenant terms specific to a given lease or credit agreement. Not a loan offer, commitment, or investment recommendation. Cobalt Commercial Credit is an advisory and placement firm; actual terms depend on lender/counterparty underwriting. Prepared for discussion purposes only.
+    </div>
+  `;
+}
+
+document.getElementById('printBtn').addEventListener('click', function(){
+  window.print();
+});
+
+document.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calc));
+document.getElementById('leaseStructure').addEventListener('change', function(){
+  document.getElementById('grossOpexField').style.display = this.value === 'gross' ? 'block' : 'none';
+  calc();
+});
+document.getElementById('recourseType').addEventListener('change', function(){
+  document.getElementById('recoursePremiumField').style.display = this.value === 'full' ? 'none' : 'block';
+  calc();
+});
+document.getElementById('advToggle').addEventListener('click', function(){
+  this.classList.toggle('open');
+  document.getElementById('advBody').classList.toggle('open');
+});
+document.getElementById('compareToggle').addEventListener('click', function(){
+  this.classList.toggle('open');
+  const body = document.getElementById('compareBody');
+  body.classList.toggle('open');
+  if(body.classList.contains('open') && typeof loadSavedScenarios === 'function') loadSavedScenarios();
+});
+calc();
+
+// ============ Auth gate, prefill from URL, and scenario saving ============
+(function(){
+  var SUPABASE_URL = 'https://pdqywwxyibnapeytoalk.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_gAk4DGF0YlBxFQkcO92reQ_cb9H91lQ';
+  var REST = SUPABASE_URL + '/rest/v1';
+  var AUTH = SUPABASE_URL + '/auth/v1';
+  var session = null;
+
+  function $(id){ return document.getElementById(id); }
+  function sbHeaders(extra){
+    var h = { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if(session && session.access_token){ h['Authorization'] = 'Bearer ' + session.access_token; }
+    return Object.assign(h, extra||{});
+  }
+  async function authSignIn(email, password){
+    var res = await fetch(AUTH+'/token?grant_type=password', { method:'POST', headers:{ 'apikey':SUPABASE_KEY, 'Content-Type':'application/json' }, body: JSON.stringify({ email:email, password:password }) });
+    var data = await res.json();
+    if(!res.ok) throw new Error(data.error_description || data.msg || 'Incorrect email or password');
+    return data;
+  }
+  async function authRefresh(refreshToken){
+    var res = await fetch(AUTH+'/token?grant_type=refresh_token', { method:'POST', headers:{ 'apikey':SUPABASE_KEY, 'Content-Type':'application/json' }, body: JSON.stringify({ refresh_token:refreshToken }) });
+    var data = await res.json();
+    if(!res.ok) throw new Error('refresh failed');
+    return data;
+  }
+  function saveSession(data){
+    session = { access_token:data.access_token, refresh_token:data.refresh_token, expires_at: Date.now() + (data.expires_in||3600)*1000, email: data.user && data.user.email };
+    try{ localStorage.setItem('cobalt_session', JSON.stringify(session)); }catch(e){}
+  }
+  function loadStoredSession(){
+    try{ var raw = localStorage.getItem('cobalt_session'); if(raw) session = JSON.parse(raw); }catch(e){ session = null; }
+  }
+  async function ensureValidSession(){
+    if(!session) return false;
+    if(Date.now() < session.expires_at - 60000) return true;
+    try{ saveSession(await authRefresh(session.refresh_token)); return true; }
+    catch(e){ session = null; try{ localStorage.removeItem('cobalt_session'); }catch(e2){} return false; }
+  }
+
+  function showAuthErr(msg){ var el=$('authErr'); el.textContent=msg; el.classList.add('show'); }
+  $('authSubmit').addEventListener('click', async function(){
+    var email = $('authEmail').value.trim();
+    var password = $('authPassword').value;
+    if(!email || !password){ showAuthErr('Enter an email and password.'); return; }
+    this.disabled = true;
+    try{ saveSession(await authSignIn(email, password)); enterApp(); }
+    catch(e){ showAuthErr(e.message || 'Incorrect email or password'); }
+    this.disabled = false;
+  });
+
+  function enterApp(){
+    $('authGate').style.display = 'none';
+    $('mainApp').style.display = 'block';
+    applyUrlPrefill();
+  }
+
+  $('signOutBtn').addEventListener('click', function(){
+    session = null;
+    try{ localStorage.removeItem('cobalt_session'); }catch(e){}
+    $('mainApp').style.display = 'none';
+    $('authGate').style.display = 'flex';
+    $('authEmail').value = ''; $('authPassword').value = '';
+  });
+
+  // ---------- prefill from URL params (?prospect_id=...&deal_id=...&salePrice=...&existingDebt=...) ----------
+  var linkedProspectId = null, linkedDealId = null, linkedName = null;
+  function applyUrlPrefill(){
+    var params = new URLSearchParams(window.location.search);
+    linkedProspectId = params.get('prospect_id');
+    linkedDealId = params.get('deal_id');
+    linkedName = params.get('name');
+    var overwriteFieldMap = { salePrice:'salePrice', existingDebt:'existingDebt', propertyValue:'salePrice' };
+    Object.keys(overwriteFieldMap).forEach(function(param){
+      var val = params.get(param);
+      var el = $(overwriteFieldMap[param]);
+      if(val!=null && el){ el.value = val; }
+    });
+    var fillIfEmptyFieldMap = { contactName:'contactName', phone:'contactPhone', email:'contactEmail', address:'propertyAddress' };
+    Object.keys(fillIfEmptyFieldMap).forEach(function(param){
+      var val = params.get(param);
+      var el = $(fillIfEmptyFieldMap[param]);
+      if(val!=null && el && !el.value){ el.value = val; }
+    });
+    if(linkedName){
+      $('linkedTag').style.display = 'inline-block';
+      $('linkedTag').textContent = '🔗 ' + linkedName;
+      var pf = $('preparedFor');
+      if(pf && !pf.value) pf.value = linkedName;
+    }
+    $('runAuditBtn').style.display = linkedDealId ? 'inline-block' : 'none';
+    if(typeof calc === 'function') calc();
+  }
+
+  // ---------- save scenario ----------
+  $('toolSwitcher').addEventListener('change', function(){
+    if(this.value) window.location.href = this.value;
+  });
+  $('saveScenarioBtn').addEventListener('click', async function(){
+    if(!session){ alert('Please sign in again to save.'); return; }
+    var inputs = {};
+    document.querySelectorAll('input, select').forEach(function(el){ if(el.id) inputs[el.id] = el.value; });
+    var payload = {
+      id: 'slb:'+Date.now()+Math.random().toString(36).slice(2,7),
+      created_at: new Date().toISOString(),
+      created_by: session.email || 'Unknown',
+      prospect_id: linkedProspectId,
+      deal_id: linkedDealId,
+      sale_price: parseFloat($('salePrice').value)||null,
+      existing_debt: parseFloat($('existingDebt').value)||null,
+      cap_rate: parseFloat($('capRate').value)||null,
+      lease_term: parseFloat($('leaseTerm').value)||null,
+      escalation: parseFloat($('escalation').value)||null,
+      loan_rate: parseFloat($('loanRate').value)||null,
+      loan_amount: parseFloat($('loanAmount').value)||null,
+      loan_amort: parseFloat($('loanAmort').value)||null,
+      full_inputs: inputs
+    };
+    try{
+      var res = await fetch(REST+'/slb_scenarios', {
+        method:'POST', headers: sbHeaders({ 'Prefer':'return=minimal' }), body: JSON.stringify([payload])
+      });
+      if(!res.ok) throw new Error('save failed');
+      var btn = $('saveScenarioBtn');
+      var orig = btn.textContent;
+      btn.textContent = 'Saved ✓';
+      setTimeout(function(){ btn.textContent = orig; }, 2000);
+    }catch(e){
+      alert('Could not save — check your connection and try again.');
+    }
+  });
+
+  // ---------- Compare Saved Scenarios ----------
+  var selectedScenarioIds = [];
+  window.loadSavedScenarios = async function(){
+    var listEl = $('compareList');
+    var scopeNoteEl = $('compareScopeNote');
+    if(!session){ listEl.textContent = 'Sign in to load saved scenarios.'; return; }
+    listEl.textContent = 'Loading…';
+    var url;
+    if(linkedDealId){
+      url = REST + '/slb_scenarios?deal_id=eq.' + encodeURIComponent(linkedDealId) + '&order=created_at.desc&limit=20';
+      scopeNoteEl.textContent = ' — scenarios linked to this deal';
+    } else {
+      url = REST + '/slb_scenarios?created_by=eq.' + encodeURIComponent(session.email||'') + '&order=created_at.desc&limit=20';
+      scopeNoteEl.textContent = ' — your 20 most recent (not linked to a deal)';
+    }
+    try{
+      var res = await fetch(url, { headers: sbHeaders() });
+      if(!res.ok) throw new Error('fetch failed');
+      var rows = await res.json();
+      if(!rows.length){ listEl.innerHTML = 'No saved scenarios found' + (linkedDealId ? ' for this deal.' : '.'); return; }
+      selectedScenarioIds = [];
+      listEl.innerHTML = rows.map(function(row){
+        var inputs = row.full_inputs || {};
+        var label = (inputs.preparedFor || 'Untitled') + ' — ' + new Date(row.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        var subtitle = fmt(row.sale_price||0) + ' @ ' + (row.cap_rate!=null ? row.cap_rate.toFixed(2) : '0.00') + '% cap';
+        return '<label style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer;">' +
+          '<input type="checkbox" class="compare-check" value="' + row.id + '" style="width:auto;">' +
+          '<span style="flex:1;"><b style="color:var(--text);">' + label + '</b><br><span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;">' + subtitle + '</span></span>' +
+        '</label>';
+      }).join('');
+      var scenarioById = {};
+      rows.forEach(function(row){ scenarioById[row.id] = row; });
+      listEl.querySelectorAll('.compare-check').forEach(function(cb){
+        cb.addEventListener('change', function(){
+          selectedScenarioIds = Array.from(listEl.querySelectorAll('.compare-check:checked')).map(function(c){ return c.value; });
+          var runBtn = $('compareRunBtn');
+          runBtn.textContent = 'Compare Selected (' + selectedScenarioIds.length + ')';
+          runBtn.disabled = selectedScenarioIds.length < 2 || selectedScenarioIds.length > 3;
+        });
+      });
+      $('compareRunBtn').onclick = function(){ renderCompareResults(selectedScenarioIds.map(function(id){ return scenarioById[id]; })); };
+    }catch(e){
+      listEl.textContent = 'Could not load saved scenarios — check your connection and try again.';
+    }
+  };
+  function renderCompareResults(scenarios){
+    var metrics = scenarios.map(function(row){
+      var m = computeKeyMetrics(row.full_inputs || {});
+      m.label = (row.full_inputs && row.full_inputs.preparedFor) || 'Untitled';
+      m.date = new Date(row.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      return m;
+    });
+    var lines = [
+      ['Prepared for', function(m){ return m.label; }],
+      ['Date saved', function(m){ return m.date; }],
+      ['Sale price', function(m){ return fmt(m.salePrice); }],
+      ['Cap rate', function(m){ return fmtPct(m.capRate); }],
+      ['Net proceeds', function(m){ return fmt(m.netProceeds); }],
+      ['Year 1 rent', function(m){ return fmt(m.year1Rent); }],
+      ['Loan rate (effective)', function(m){ return fmtPct(m.effectiveLoanRate); }],
+      ['Recourse', function(m){ return ({full:'Full Recourse',partial:'Partial Recourse',nonrecourse:'Non-Recourse'})[m.recourseType]; }],
+      ['Annual debt service', function(m){ return fmt(m.annualDebtService); }],
+      ['Breakeven cap rate', function(m){ return fmtPct(m.breakevenRate); }],
+      ['Effective cost of capital', function(m){ return fmtPct(m.effRate); }],
+    ];
+    $('compareResults').innerHTML = '<table class="detail"><thead><tr><th>Metric</th>' +
+      metrics.map(function(){ return '<th>Scenario</th>'; }).join('') + '</tr></thead><tbody>' +
+      lines.map(function(l){
+        return '<tr><td class="label">' + l[0] + '</td>' + metrics.map(function(m){ return '<td class="hi">' + l[1](m) + '</td>'; }).join('') + '</tr>';
+      }).join('') + '</tbody></table>' +
+      '<button type="button" id="comparePrintBtn" style="margin-top:14px;background:var(--cobalt);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:\'IBM Plex Mono\',monospace;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;">Print / Save as PDF</button>';
+    $('comparePrintBtn').addEventListener('click', function(){ printComparison(metrics, lines); });
+  }
+
+  function printComparison(metrics, lines){
+    var logoNode = document.querySelector('.brand svg');
+    var logoHTML = logoNode ? logoNode.outerHTML : '';
+    var today = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+    document.getElementById('printSummary').innerHTML =
+      '<div class="ps-header"><div style="display:flex;align-items:center;gap:14px;">' + logoHTML +
+      '<div><div class="ps-title">Sale-Leaseback Scenario Comparison</div></div></div>' +
+      '<div class="ps-date">Prepared ' + today + '</div></div>' +
+      '<div class="ps-section"><table class="detail" style="width:100%;"><thead><tr><th>Metric</th>' +
+      metrics.map(function(m){ return '<th>' + m.label + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      lines.map(function(l){
+        return '<tr><td class="label">' + l[0] + '</td>' + metrics.map(function(m){ return '<td class="hi">' + l[1](m) + '</td>'; }).join('') + '</tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<div class="ps-footnote">Illustrative only. Recomputed from each scenario\'s saved inputs at comparison time; does not incorporate tax treatment, depreciation loss on the sold asset, or covenant terms specific to a given lease or credit agreement. Not a loan offer, commitment, or investment recommendation. Cobalt Commercial Credit is an advisory and placement firm; actual terms depend on lender/counterparty underwriting.</div>';
+    window.print();
+  }
+
+  $('runAuditBtn').addEventListener('click', function(){
+    if(!linkedDealId) return;
+    var params = new URLSearchParams();
+    params.set('deal_id', linkedDealId);
+    params.set('name', linkedName || $('preparedFor').value || '');
+    window.open('https://cobaltcommercialcredit.github.io/cobalt-treasury-audit/?'+params.toString(), '_blank');
+  });
+
+  (async function init(){
+    loadStoredSession();
+    var ok = await ensureValidSession();
+    if(ok){ enterApp(); }
+    else { $('authGate').style.display = 'flex'; $('mainApp').style.display = 'none'; }
+  })();
+})();
+</script>
+</body>
+</html>
